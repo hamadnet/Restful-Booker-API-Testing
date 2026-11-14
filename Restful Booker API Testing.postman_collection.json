@@ -1,0 +1,423 @@
+{
+  "info": {
+    "_postman_id": "ee2211c7-2bea-4261-b324-4ad8da667278",
+    "name": "Restful Booker API Testing",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "49835442",
+    "_collection_link": "https://go.postman.co/collection/49835442-ee2211c7-2bea-4261-b324-4ad8da667278?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Create Auth Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "//check status code \npm.test(\"Status code is 200\", function () {\n    pm.expect(pm.response.code).to.be.eql(200);\n});\n\n//check that a token is returned\npm.test(\"Response contains a token\", function () {\n    var jsonData = pm.response.json();\n    pm.expect(jsonData).to.have.property(\"token\");\n    pm.expect(jsonData.token).to.be.a(\"string\");\n});\n \n //check responce time\n  pm.test(\"Response time is less than 2000ms \", function()\n  {\n    pm.expect(pm.response.responseTime).to.be.below(2000);\n\n  });\n\n  //check response size \n  pm.test(\"Response size is less than 1000 bytes\", function()\n  {\n    pm.expect(pm.response.responseSize).to.be.lessThan(1000);\n  });\n\n  //check response headers\n pm.test(\"Response should have content-type header \",function()\n {\n    pm.expect(pm.response.headers.get(\"content-type\")).to.include(\"application/json\");\n });\n\n //check response body\n pm.test(\"response body is not empty \", function()\n {\n    pm.expect(pm.response.text()).to.not.be.empty;\n })\n  //property token\n\n  pm.test(\"Property token exisist\",function()\n  {\n    pm.expect(pm.response.json()).to.have.property(\"token\");\n  })\n  \n  //type of token\n\n  pm.test(\"token is a string \",function()\n  {\n    pm.expect(pm.response.json().token).to.be.a(\"string\");\n  })\n  "
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"username\": \"admin\",\r\n    \"password\": \"password123\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://restful-booker.herokuapp.com/auth",
+              "protocol": "https",
+              "host": [
+                "restful-booker",
+                "herokuapp",
+                "com"
+              ],
+              "path": [
+                "auth"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Booking",
+      "item": [
+        {
+          "name": "Booking - GetBookingIds",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "//Status Code Validation\npm.test(\"Status code is 200\", function () {\n    pm.expect(pm.response.code).to.equal(200);\n});\n\n//Response is an Array\npm.test(\"Response is an array\", function () {\n    const data = pm.response.json();\n\n    pm.expect(data).to.be.an(\"array\");\n});\n\n//Array is not Empty\npm.test(\"Booking list is not empty\", function () {\n    const data = pm.response.json();\n\n    pm.expect(data).to.not.be.empty;\n});\n\n// Every Booking has an ID\npm.test(\"Every booking has an ID\", function () {\n    const data = pm.response.json();\n\n    data.forEach(function (booking) {\n        pm.expect(booking).to.have.property(\"bookingid\");\n    });\n});\n\n//Booking ID is a Number\npm.test(\"Every booking ID is a number\", function () {\n    const data = pm.response.json();\n\n    data.forEach(function (booking) {\n        pm.expect(booking.bookingid).to.be.a(\"number\");\n    });\n});\n\n//All Booking IDs are Positive\npm.test(\"All booking IDs are positive\", function () {\n    const data = pm.response.json();\n\n    data.forEach(function (booking) {\n        pm.expect(booking.bookingid).to.be.above(0);\n    });\n});\n\n// Response Time Validation\npm.test(\"Response time is less than 2000ms\", function () {\n    pm.expect(pm.response.responseTime).to.be.below(2000);\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://restful-booker.herokuapp.com/booking",
+              "protocol": "https",
+              "host": [
+                "restful-booker",
+                "herokuapp",
+                "com"
+              ],
+              "path": [
+                "booking"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Booking-GetBookong by id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {\r\n    pm.expect(pm.response.code).to.equal(200);\r\n});\r\n\r\npm.test(\"Response body is not empty\", function () {\r\n    pm.expect(pm.response.text()).to.not.be.empty;\r\n});\r\n\r\npm.test(\"Firstname is correct\", function () {\r\n    const data = pm.response.json();\r\n\r\n    pm.expect(data.firstname).to.equal(\"Hamad\");\r\n});\r\n\r\n\r\npm.test(\"Lastname is correct\", function () {\r\n    const data = pm.response.json();\r\n\r\n    pm.expect(data.lastname).to.equal(\"Ibrahim\");\r\n});\r\n\r\n\r\npm.test(\"Total price is correct\", function () {\r\n    const data = pm.response.json();\r\n\r\n    pm.expect(data.totalprice).to.equal(150);\r\n});\r\n\r\n\r\n\r\n\r\npm.test(\"Deposit paid is boolean\", function () {\r\n    const data = pm.response.json();\r\n\r\n    pm.expect(data.depositpaid).to.be.a(\"boolean\");\r\n    pm.expect(data.depositpaid).to.equal(true);\r\n});\r\n\r\npm.test(\"Booking dates exist\", function () {\r\n    const data = pm.response.json();\r\n\r\n    pm.expect(data).to.have.property(\"bookingdates\");\r\n    pm.expect(data.bookingdates.checkin).to.equal(\"2026-12-01\");\r\n    pm.expect(data.bookingdates.checkout).to.equal(\"2026-12-05\");\r\n});\r\n\r\n\r\npm.test(\"Response time is less than 1000ms\", function () {\r\n    pm.expect(pm.response.responseTime).to.be.below(1000);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://restful-booker.herokuapp.com/booking/:id",
+              "protocol": "https",
+              "host": [
+                "restful-booker",
+                "herokuapp",
+                "com"
+              ],
+              "path": [
+                "booking",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "3"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Booking-GetBookong by name",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const response = pm.response.json();\n\npm.test(\"Status code is 200\", function () {\n    pm.expect(pm.response.code).to.equal(200);\n});\n\npm.test(\"Response is an array\", function () {\n    pm.expect(response).to.be.an(\"array\");\n});\n\npm.test(\"Every booking has a bookingid\", function () {\n    response.forEach(function (booking) {\n        pm.expect(booking).to.have.property(\"bookingid\");\n        pm.expect(booking.bookingid).to.be.a(\"number\");\n    });\n});\n\npm.test(\"Response time is less than 1000ms\", function () {\n    pm.expect(pm.response.responseTime).to.be.below(1000);\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://restful-booker.herokuapp.com/booking/?firstname=hamad",
+              "protocol": "https",
+              "host": [
+                "restful-booker",
+                "herokuapp",
+                "com"
+              ],
+              "path": [
+                "booking",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "firstname",
+                  "value": "hamad"
+                },
+                {
+                  "key": "lastname",
+                  "value": "Allen",
+                  "disabled": true
+                },
+                {
+                  "key": "totalprice",
+                  "value": "111",
+                  "disabled": true
+                },
+                {
+                  "key": "additionalneeds",
+                  "value": "midnight snack",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Booking",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "//Status Code\npm.test(\"Status code is 200\", function () {\n    pm.expect(pm.response.code).to.equal(200);\n});\n\n//Booking ID Exists\npm.test(\"Booking ID exists\", function () {\n    const data = pm.response.json();\n\n    pm.expect(data).to.have.property(\"bookingid\");\n});\n\n\n//Booking ID is Number\npm.test(\"Booking ID is a number\", function () {\n    const data = pm.response.json();\n\n    pm.expect(data.bookingid).to.be.a(\"number\");\n    pm.expect(data.bookingid).to.be.above(0);\n});\n\n\n//First Name Validation\npm.test(\"First name is correct\", function () {\n    const data = pm.response.json();\n\n    pm.expect(data.booking.firstname).to.equal(\"hamad\");\n});\n\n\n//Last Name Validation\npm.test(\"Last name is correct\", function () {\n    const data = pm.response.json();\n\n    pm.expect(data.booking.lastname).to.equal(\"Brown\");\n});\n\n//Total Price Validation\n\npm.test(\"Total price is correct\", function () {\n    const data = pm.response.json();\n\n    pm.expect(data.booking.totalprice).to.equal(111);\n});\n\n\n//Response Time\npm.test(\"Response time is less than 1000ms\", function () {\n    pm.expect(pm.response.responseTime).to.be.below(1000);\n});\n\n\n//Deposit Paid Validation\npm.test(\"Deposit paid is boolean\", function () {\n    const data = pm.response.json();\n\n    pm.expect(data.booking.depositpaid).to.be.a(\"boolean\");\n    pm.expect(data.booking.depositpaid).to.equal(true);\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"firstname\" : \"hamad\",\r\n    \"lastname\" : \"Brown\",\r\n    \"totalprice\" : 111,\r\n    \"depositpaid\" : true,\r\n    \"bookingdates\" : {\r\n        \"checkin\" : \"2018-01-01\",\r\n        \"checkout\" : \"2019-01-01\"\r\n    },\r\n    \"additionalneeds\" : \"Breakfast\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://restful-booker.herokuapp.com/booking",
+              "protocol": "https",
+              "host": [
+                "restful-booker",
+                "herokuapp",
+                "com"
+              ],
+              "path": [
+                "booking"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Booking(PUT)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Status Code\npm.test(\"Status code is 403\", function () {\n    pm.expect(pm.response.code).to.equal(403);\n});\n\n// Response Body\npm.test(\"Response body is not empty\", function () {\n    pm.expect(pm.response.text()).to.not.be.empty;\n});\n\n// Only parse JSON if the response is successful\nif (pm.response.code === 200) {\n    const data = pm.response.json();\n\n    // Firstname Validation\n    pm.test(\"Firstname is updated\", function () {\n        pm.expect(data.firstname).to.equal(\"Hamad Updated\");\n    });\n\n    // Lastname Validation\n    pm.test(\"Lastname is correct\", function () {\n        pm.expect(data.lastname).to.equal(\"Ibrahim\");\n    });\n\n    // Total Price Validation\n    pm.test(\"Total price is updated\", function () {\n        pm.expect(data.totalprice).to.equal(200);\n    });\n\n    // Deposit Paid Validation\n    pm.test(\"Deposit paid is updated\", function () {\n        pm.expect(data.depositpaid).to.equal(false);\n    });\n\n    //Booking Dates Validation\n    pm.test(\"Checkin date is updated\", function () {\n        pm.expect(data.bookingdates.checkin)\n            .to.equal(\"2026-12-10\");\n    });\n\n    pm.test(\"Checkout date is updated\", function () {\n        pm.expect(data.bookingdates.checkout)\n            .to.equal(\"2026-12-15\");\n    });\n\n    //Additional Needs Validation\n    pm.test(\"Additional needs are updated\", function () {\n        pm.expect(data.additionalneeds).to.equal(\"Lunch\");\n    });\n}\n\n//Response Time\npm.test(\"Response time is less than 1000ms\", function () {\n    pm.expect(pm.response.responseTime).to.be.below(1000);\n});"
+                ]
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disabledSystemHeaders": {}
+          },
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "token=3d4e5882c086866"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"firstname\" : \"hamadibrahim\",\r\n    \"lastname\" : \"Brown\",\r\n    \"totalprice\" : 111,\r\n    \"depositpaid\" : true,\r\n    \"bookingdates\" : {\r\n        \"checkin\" : \"2018-01-01\",\r\n        \"checkout\" : \"2019-01-01\"\r\n    },\r\n    \"additionalneeds\" : \"Breakfast\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://restful-booker.herokuapp.com/booking/:id",
+              "protocol": "https",
+              "host": [
+                "restful-booker",
+                "herokuapp",
+                "com"
+              ],
+              "path": [
+                "booking",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "100"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Booking(PATCH)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "token=40e655cb527018d"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"firstname\" : \"Shahd\",\r\n    \"lastname\" : \"Brown\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "https://restful-booker.herokuapp.com/booking/:id",
+              "protocol": "https",
+              "host": [
+                "restful-booker",
+                "herokuapp",
+                "com"
+              ],
+              "path": [
+                "booking",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "3"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Booking",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Cookie",
+                "value": "token=40e655cb527018d"
+              }
+            ],
+            "url": {
+              "raw": "https://restful-booker.herokuapp.com/booking/:id",
+              "protocol": "https",
+              "host": [
+                "restful-booker",
+                "herokuapp",
+                "com"
+              ],
+              "path": [
+                "booking",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Booking - Invalid ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Non-existing booking returns 404\", function () {\r\n    pm.expect(pm.response.code).to.equal(404);\r\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://restful-booker.herokuapp.com/booking/999999999",
+              "protocol": "https",
+              "host": [
+                "restful-booker",
+                "herokuapp",
+                "com"
+              ],
+              "path": [
+                "booking",
+                "999999999"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Health Check",
+      "item": [
+        {
+          "name": "HealthCheck",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "https://restful-booker.herokuapp.com/ping",
+              "protocol": "https",
+              "host": [
+                "restful-booker",
+                "herokuapp",
+                "com"
+              ],
+              "path": [
+                "ping"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "token",
+      "value": ""
+    }
+  ]
+}
